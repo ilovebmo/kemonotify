@@ -66,6 +66,29 @@ def generate(api: str, arg: list[dict]):
                         f"""Couldn't reach {api + f'''/{creator['service']}/user/{creator['id']}'''}."""
                     )
 
+#
+# Notification on click
+def send_notif(creator: dict, api: str, toast: win10toast.ToastNotifier, icon: str):
+    with open(f"{creator['name']}.pkl", "rb+") as file:
+        try:
+            latest = json.loads(
+                requests.get(
+                    api + f"/{creator['service']}/user/{creator['id']}"
+                ).content
+            )[0]
+        except Exception:
+            err(
+                f"""Couldn't reach {api + f'''/{creator['service']}/user/{creator['id']}'''}."""
+            )
+        file.write(pickle.dumps(latest))
+        toast.show_toast(
+            f"Latest post from {creator['name']} on {creator['service']}",
+            f"{latest['title']}",
+            duration=0,
+            icon_path=icon,
+            threaded=True,
+        )
+
 
 #
 # The main function
@@ -87,7 +110,7 @@ def main():
     generate(api, arguments["creators"])
     
     options = tuple(
-        (creator["name"], None, lambda arg: 0) for creator in arguments["creators"]
+        (creator["name"], None, lambda SysTrayIcon: send_notif(creator, api, toast, icon)) for creator in arguments["creators"]
     )
     infi.systray.SysTrayIcon(icon, "Kemonotify", options).start()
 
@@ -117,6 +140,8 @@ def main():
                             + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}"
                             + "."
                         )
+                        
+                        file.write(pickle.dumps(latest))
 
                         toast.show_toast(
                             f"New post from {creator['name']} on {creator['service']}",
@@ -125,7 +150,6 @@ def main():
                             icon_path=icon,
                             threaded=True,
                         )
-                        sys.stderr, sys.stdout = sys.__stderr__, sys.__stdout__
 
             # For now just sleep
             time.sleep(arguments["time"])
