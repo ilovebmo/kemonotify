@@ -1,4 +1,4 @@
-import requests, json, pickle, os, sys, time, logging, win10toast, infi.systray, threading
+import requests, json, pickle, os, sys, time, logging, infi.systray, threading, win10toast_click, webbrowser
 
 
 #
@@ -67,27 +67,36 @@ def generate(api: str, arg: list[dict]):
                     )
 
 #
-# Notification on click
-def send_notif(creator: dict, api: str, toast: win10toast.ToastNotifier, icon: str):
+# Functions for notification on click
+def send_notif(creator: dict, api: str, toast: win10toast_click.ToastNotifier, config: dict):
     with open(f"{creator['name']}.pkl", "rb+") as file:
         try:
             latest = json.loads(
                 requests.get(
-                    api + f"/{creator['service']}/user/{creator['id']}"
+                    config['api'] + f"/{creator['service']}/user/{creator['id']}"
                 ).content
             )[0]
         except Exception:
             err(
-                f"""Couldn't reach {api + f'''/{creator['service']}/user/{creator['id']}'''}."""
+                f"""Couldn't reach {config['api'] + f'''/{creator['service']}/user/{creator['id']}'''}."""
             )
         file.write(pickle.dumps(latest))
         toast.show_toast(
             f"Latest post from {creator['name']} on {creator['service']}",
             f"{latest['title']}",
             duration=0,
-            icon_path=icon,
+            icon_path=config['icon'],
             threaded=True,
+            callback_on_click=on_click,
+            arguments=f"{config['base']}"
+                            + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}"
         )
+        
+def on_click(link: str):
+    try:
+        webbrowser.open_new(link)
+    except:
+        err("Failed to open page.")
 
 
 #
@@ -104,13 +113,13 @@ def main():
     base = config["base"]
     c_lst = json.loads(requests.get(api + "/creators.txt").content)
 
-    toast = win10toast.ToastNotifier()
+    toast = win10toast_click.ToastNotifier()
 
     arguments = parse_argv(c_lst, config["time"])
     generate(api, arguments["creators"])
     
     options = tuple(
-        (creator["name"], None, lambda SysTrayIcon: send_notif(creator, api, toast, icon)) for creator in arguments["creators"]
+        (creator["name"], None, lambda SysTrayIcon: send_notif(creator, api, toast, config)) for creator in arguments["creators"]
     )
     infi.systray.SysTrayIcon(icon, "Kemonotify", options).start()
 
@@ -149,6 +158,9 @@ def main():
                             duration=0,
                             icon_path=icon,
                             threaded=True,
+                            callback_on_click=on_click,
+                            arguments=f"Link: {base}"
+                            + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}",
                         )
 
             # For now just sleep
