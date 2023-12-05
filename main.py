@@ -1,4 +1,4 @@
-import requests, json, pickle, os, sys, time, logging
+import requests, json, pickle, os, sys, time, logging, win10toast, infi.systray, threading
 
 
 #
@@ -70,49 +70,69 @@ def generate(api: str, arg: list[dict]):
 #
 # The main function
 def main():
+    with open(os.getcwd()+"/config.json", "rb") as f:
+        config = json.loads(f.read())
+    logging.basicConfig(filename=config["logging"])
+    
     info("Program Started.")
 
-    with open("config.json", "rb") as f:
-        config = json.loads(f.read())
-
-    logging.basicConfig(filename=config["logging"])
+    icon = config["icon"]
     api = config["api"]
     base = config["base"]
     c_lst = json.loads(requests.get(api + "/creators.txt").content)
 
+    toast = win10toast.ToastNotifier()
+
     arguments = parse_argv(c_lst, config["time"])
     generate(api, arguments["creators"])
+    
+    options = tuple(
+        (creator["name"], None, lambda arg: 0) for creator in arguments["creators"]
+    )
+    infi.systray.SysTrayIcon(icon, "Kemonotify", options).start()
 
-    while True:
-        for creator in arguments["creators"]:
-            info(f"Checking {creator['service']}, {creator['name']}.")
-            try:
-                latest = json.loads(
-                    requests.get(
-                        api + f"/{creator['service']}/user/{creator['id']}"
-                    ).content
-                )[0]
-            except Exception:
-                err(
-                    f"""Couldn't reach {api + f'''/{creator['service']}/user/{creator['id']}'''}."""
-                )
-
-            with open(f"{creator['name']}.pkl", "rb+") as file:
-                current = pickle.loads(file.read())
-                if current != latest:
-                    info(
-                        f"Found {latest['id']} for {creator['service']}, {creator['name']}."
+    def checker():
+        while True:
+            for creator in arguments["creators"]:
+                info(f"Checking {creator['service']}, {creator['name']}.")
+                try:
+                    latest = json.loads(
+                        requests.get(
+                            api + f"/{creator['service']}/user/{creator['id']}"
+                        ).content
+                    )[0]
+                except Exception:
+                    err(
+                        f"""Couldn't reach {api + f'''/{creator['service']}/user/{creator['id']}'''}."""
                     )
-                    info(
-                        f"Link: {base}"
-                        + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}"
-                        + "."
-                    )
-                    file.write(pickle.dumps(latest))
 
-        # For now just sleep
-        time.sleep(arguments["time"])
+                with open(f"{creator['name']}.pkl", "rb+") as file:
+                    current = pickle.loads(file.read())
+                    if current == latest:
+                        info(
+                            f"Found {latest['id']} for {creator['service']}, {creator['name']}."
+                        )
+                        info(
+                            f"Link: {base}"
+                            + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}"
+                            + "."
+                        )
+
+                        toast.show_toast(
+                            f"New post from {creator['name']} on {creator['service']}",
+                            f"{latest['title']}",
+                            duration=0,
+                            icon_path=icon,
+                            threaded=True,
+                        )
+                        sys.stderr, sys.stdout = sys.__stderr__, sys.__stdout__
+
+            # For now just sleep
+            time.sleep(arguments["time"])
+
+    threading.Thread(target=checker, daemon=True).start()
 
 
 if __name__ == "__main__":
-    main()
+    
+    threading.Thread(target=main).start()
