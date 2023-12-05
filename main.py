@@ -1,4 +1,4 @@
-import requests, json, pickle, os, sys, time, logging, infi.systray, threading, win10toast_click, webbrowser
+import requests, json, pickle, os, sys, time, logging, infi.systray, threading, win11toast, webbrowser
 
 
 #
@@ -70,7 +70,7 @@ def generate(api: str, arg: list[dict]):
 #
 # Functions for notification on click
 def send_notif(
-    creator: dict, api: str, toast: win10toast_click.ToastNotifier, config: dict
+    creator: dict, api: str, config: dict
 ):
     with open(f"{creator['name']}.pkl", "rb+") as file:
         try:
@@ -84,20 +84,14 @@ def send_notif(
                 f"""Couldn't reach {config['api'] + f'''/{creator['service']}/user/{creator['id']}'''}."""
             )
         file.write(pickle.dumps(latest))
-        toast.show_toast(
-            f"Latest post from {creator['name']} on {creator['service']}",
+        win11toast.toast(
+            f"Latest post from {creator['name']} on {creator['service']}.",
             f"{latest['title']}",
-            duration=20,
-            icon_path=config["icon"],
-            threaded=True,
-            callback_on_click=on_click,
-            arguments=f"{config['base']}"
-            + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}",
-            text=f"New from {creator['name']}",
-        )
+            on_click=lambda args: click(f"{config['base']}"
+            + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}",),)
 
 
-def on_click(link: str):
+def click(link: str, **kwargs):
     try:
         webbrowser.open_new(link)
     except:
@@ -118,8 +112,6 @@ def main():
     base = config["base"]
     c_lst = json.loads(requests.get(api + "/creators.txt").content)
 
-    toast = win10toast_click.ToastNotifier()
-
     arguments = parse_argv(c_lst, config["time"])
     generate(api, arguments["creators"])
 
@@ -127,7 +119,7 @@ def main():
         (
             creator["name"],
             None,
-            lambda SysTrayIcon: send_notif(creator, api, toast, config),
+            lambda SysTrayIcon: send_notif(creator, api, config),
         )
         for creator in arguments["creators"]
     )
@@ -162,19 +154,13 @@ def main():
 
                         file.write(pickle.dumps(latest))
 
-                        toast.show_toast(
-                            f"New post from {creator['name']} on {creator['service']}",
-                            f"{latest['title']}",
-                            duration=20,
-                            icon_path=icon,
-                            threaded=True,
-                            callback_on_click=on_click,
-                            arguments=f"Link: {base}"
+                        win11toast.toast(
+                            f"Latest post from {creator['name']} on {creator['service']}.",
+                            f"{latest['title']}", 
+                            on_click=lambda args: click(f"{config['base']}"
                             + f"/{creator['service']}/user/{creator['id']}/post/{latest['id']}",
-                            text=f"New from {creator['name']}",
-                        )
+                        ))
 
-            # For now just sleep
             time.sleep(arguments["time"])
 
     threading.Thread(target=checker, daemon=True).start()
