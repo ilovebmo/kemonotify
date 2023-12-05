@@ -108,7 +108,7 @@ def main():
 
                 with open(f"{creator['name']}.pkl", "rb+") as file:
                     current = pickle.loads(file.read())
-                    if current == latest:
+                    if current != latest:
                         info(
                             f"Found {latest['id']} for {creator['service']}, {creator['name']}."
                         )
