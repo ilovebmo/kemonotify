@@ -1,7 +1,0 @@
-{
-    "api": "https://kemono.party/api/v1",
-    "base": "https://kemono.party",
-    "logging": "logging.log",
-    "time": 3600,
-    "icon": "kemono.ico"
-}
