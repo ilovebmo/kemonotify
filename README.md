@@ -15,3 +15,10 @@ The program will periodically check **kemono.party** for new posts for whatever 
 - Thorough logging
 - Tray icon interaction
 - Notification with direct link
+
+***
+*Credit:*
+- [win11toast](https://github.com/GitHub30/win11toast)
+- [infi.systray](https://github.com/Infinidat/infi.systray)  
+And of course...
+- [Kemono](https://kemono.su)
