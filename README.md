@@ -15,6 +15,7 @@ The program will periodically check **kemono.party** for new posts for whatever 
 - Thorough logging
 - Tray icon interaction
 - Notification with direct link
+- GUI
 
 ***
 *Credit:*
