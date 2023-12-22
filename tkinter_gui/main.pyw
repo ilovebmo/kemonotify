@@ -388,7 +388,7 @@ class Kemonotify:
             try:
                 current = pickle.loads(file.read())
                 latest = creator.latest()
-                file.write(pickle.dumps(latest))
+                file.write(pickle.dumps(current))
                 if forced:
                     self.send_toast(creator, latest)
                     return
