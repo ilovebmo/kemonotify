@@ -1,4 +1,4 @@
-requests
-infi.systray
-win11toast
-pillow
+requests==2.31.0
+infi.systray==0.1.12
+win11toast==0.9
+pillow==10.2.0
