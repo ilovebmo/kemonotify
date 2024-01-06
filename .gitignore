@@ -1,6 +1,3 @@
-## VSCodium
-.vscode
-
 ## Python
 __pycache__
 # venv
@@ -12,6 +9,9 @@ build
 dist
 # persistent storage
 *.pkl
+
+## Rust
+target
 
 ## Tests
 test.py
