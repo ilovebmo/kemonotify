@@ -1,0 +1,4 @@
+requests
+infi.systray
+win11toast
+pillow
