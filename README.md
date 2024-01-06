@@ -23,6 +23,6 @@ Cuurrently working on a Rust (tauri) GUI.
 *Credit:*
 - [win11toast](https://github.com/GitHub30/win11toast)
 - [infi.systray](https://github.com/Infinidat/infi.systray)  
-- [tauri](tauri.app/)
+- [tauri](tauri.app/)  
 And of course...
 - [Kemono](https://kemono.su)
