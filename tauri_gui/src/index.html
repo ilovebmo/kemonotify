@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kemonotify</title>
+    <script type="module" src="/main.js" defer></script>
+    <style>
+      .logo.vanilla:hover {
+        filter: drop-shadow(0 0 2em #ffe21c);
+      }
+    </style>
+  </head>
+
+  <body>
+    <row>
+      <nav id="nav_names">
+        <ul id="ul_names">
+        </ul>
+      </nav>
+
+      <div>
+        <h1>Creators</h1>
+        <div id="checking_now"></div>
+      </div>
+    </row>
+    <row>
+      <button type="button" id="get_creators">GET CREATORS</button>
+      
+      <label for="creator_name">Enter a name...</label>
+      <input type="text" id="creator_name" name="creator_name" placeholder="CyanCapsule" />
+    </row>
+    <button type="button" id="start_searching">START</button>
+    <div id="new_posts"></div>
+</body>
+</html>
