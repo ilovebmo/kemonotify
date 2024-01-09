@@ -4,7 +4,7 @@
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use tauri::{Manager, Window};
+use tauri::{Manager, Window, SystemTray};
 
 // the payload type must implement `Serialize` and `Clone`.
 #[derive(Clone, serde::Serialize)]
@@ -201,14 +201,25 @@ async fn start_looking(
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct TimeList {
-    time: u64,
+    time_s: String,
     list: Option<HashMap<String, PartCreator>>,
 }
 
+impl TimeList {
+    fn time(&self) -> u64 {
+        return self.time_s.parse::<u64>().unwrap();
+    }
+}
 
 #[tauri::command]
-async fn background_search(the_window: Window, the_checklist: Option<HashMap<String, PartCreator>>) {
-    let g = std::sync::Arc::new(tauri::async_runtime::Mutex::new(TimeList{time: 5, list: the_checklist.clone()}));
+async fn background_search(
+    the_window: Window,
+    the_checklist: Option<HashMap<String, PartCreator>>,
+) {
+    let g = std::sync::Arc::new(tauri::async_runtime::Mutex::new(TimeList {
+        time_s: "5".to_string(),
+        list: the_checklist.clone(),
+    }));
 
     tauri::async_runtime::spawn(async move {
         let a = std::sync::Arc::clone(&g);
@@ -218,13 +229,13 @@ async fn background_search(the_window: Window, the_checklist: Option<HashMap<Str
                 let c = std::sync::Arc::clone(&b);
                 tauri::async_runtime::spawn(async move {
                     let mut msg = c.lock().await;
-                    *msg = serde_json::from_str(e.payload().unwrap()).expect("something went wrong");
+                    *msg =
+                        serde_json::from_str(e.payload().unwrap()).expect("something went wrong");
                     println!("{:?}", e);
                 });
             });
-            println!("TRY THIS {:?}", *g.lock().await);
             let look_list: Option<HashMap<String, PartCreator>> = (*g.lock().await).clone().list;
-            let time_in = (*g.lock().await).clone().time;
+            let time_in = (*g.lock().await).clone().time();
 
             let posts: String = match look_list {
                 None => "None".to_string(),
@@ -233,24 +244,26 @@ async fn background_search(the_window: Window, the_checklist: Option<HashMap<Str
 
             println!("{:?}", posts);
 
-
             the_window
                 .emit_all(
                     "test-event",
                     Payload {
-                        message: posts.into(),
+                        message: if posts.to_string() == "None".to_string() {
+                            "".to_string()
+                        } else {
+                            posts.into()
+                        },
                     },
                 )
                 .unwrap();
-            println!("before sleep");
             std::thread::sleep(std::time::Duration::from_secs(time_in));
-            println!("after sleep");
         }
     });
 }
 
 fn main() {
     tauri::Builder::default()
+        .system_tray(SystemTray::new())
         .invoke_handler(tauri::generate_handler![
             get_creators_list,
             filter_by_name,

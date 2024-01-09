@@ -12,11 +12,17 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "notification": {
+        "all": true
+      },
       "shell": {
         "all": false,
         "open": true
       }
+    },
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
     },
     "bundle": {
       "active": true,

@@ -1,5 +1,9 @@
-const {invoke} = window.__TAURI__.tauri;
-const {emit, listen} = window.__TAURI__.event;
+const {invoke} =
+window.__TAURI__.tauri;
+const {emit, listen} =
+window.__TAURI__.event;
+const {isPermissionGranted, requestPermission, sendNotification} =
+ window.__TAURI__.notification;
 
 
 let getCreatorsBtn;
@@ -7,6 +11,7 @@ let ulNamesList;
 let creatorNameInput;
 let startButton;
 let newPostsList;
+let timeSelect;
 
 let rustCreatorsList;
 let creatorCheckList;
@@ -16,16 +21,16 @@ ulNamesList = document.getElementById('ul_names');
 creatorNameInput = document.getElementById('creator_name');
 startButton = document.getElementById('start_searching');
 newPostsList = document.getElementById('new_posts');
-// timeInput = document.getElementById("time_input");
+timeSelect = document.getElementById('times');
 
-listen("test-event", (e) => {
-  emit("recv-event", {time: 10, list: creatorCheckList});
+listen('test-event', (e) => {
+  emit('recv-event', {time_s: timeSelect.value?? '5', list: creatorCheckList});
   console.log(e.payload);
   newPostsList.innerHTML = e.payload.message;
 });
 
-invoke("background_search", {theWindow: this, theChecklist: creatorCheckList});
-emit("recv-event", {time: 5, list: creatorCheckList});
+invoke('background_search', {theWindow: this, theChecklist: creatorCheckList});
+emit('recv-event', {time: 5, list: creatorCheckList});
 
 document.addEventListener('DOMContentLoaded', () => getCreatorsListAsHTML());
 getCreatorsBtn.addEventListener('click', () => getCreatorsListAsHTML());
@@ -33,16 +38,22 @@ getCreatorsBtn.addEventListener('click', () => getCreatorsListAsHTML());
 let searchTimeout;
 creatorNameInput.addEventListener('input', function(e) {
   clearTimeout(searchTimeout);
-  
+
   searchTimeout = setTimeout(() => {
     updateCreatorsShown(this.value);
   }, 200);
 });
 
 startButton.addEventListener('click', async () => {
-  // invoke("background_search", {theWindow: this, theChecklist: creatorCheckList});
-  // emit("recv-event", {time: 5, list: creatorCheckList});
-  // newPostsList.innerHTML = await invoke('start_looking', {theChecklist: creatorCheckList})
+  let permissionGranted = await isPermissionGranted();
+  if (! await isPermissionGranted()) {
+    const permission = await requestPermission();
+    permissionGranted = permission === 'granted';
+  }
+  if (permissionGranted) {
+    sendNotification('Tauri is awesome!');
+    sendNotification({title: 'TAURI', body: 'Tauri is awesome!'});
+  }
 });
 
 document.jsUpdateCheckList = async function(service, id) {
@@ -52,7 +63,8 @@ document.jsUpdateCheckList = async function(service, id) {
 };
 
 async function getCreatorsListAsHTML(list=null) {
-  ulNamesList.innerHTML = '<img src="https://www.wpfaster.org/wp-content/uploads/2013/06/loading-gif.gif" height="290" />';
+  ulNamesList.innerHTML = 'Loading...';
+
   if (list==null) {
     rustCreatorsList = await invoke('get_creators_list');
     list = rustCreatorsList;

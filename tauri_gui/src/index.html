@@ -2,36 +2,38 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kemonotify</title>
     <script type="module" src="/main.js" defer></script>
-    <style>
-      .logo.vanilla:hover {
-        filter: drop-shadow(0 0 2em #ffe21c);
-      }
-    </style>
   </head>
 
-  <body>
+  <body class="bg-gray-900 text-white">
     <row>
-      <nav id="nav_names">
+      <div>
+        <h1 class="">Creators</h1>
+        <div id="checking_now"></div>
+      </div>
+
+      <nav class="h-96 overflow-auto" id="nav_names">
         <ul id="ul_names">
         </ul>
       </nav>
 
-      <div>
-        <h1>Creators</h1>
-        <div id="checking_now"></div>
-      </div>
     </row>
     <row>
-      <button type="button" id="get_creators">GET CREATORS</button>
+      <button class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]" type="button" id="get_creators">GET CREATORS</button>
       
       <label for="creator_name">Enter a name...</label>
       <input type="text" id="creator_name" name="creator_name" placeholder="CyanCapsule" />
     </row>
     <button type="button" id="start_searching">START</button>
+    <select name="times" id="times"> 
+      <option value=86400>Day</option> 
+      <option value=5>5s</option> 
+      <option value=10>10s</option> 
+      <option value=3600>Hour</option> 
+    </select>
     <div id="new_posts"></div>
 </body>
 </html>
