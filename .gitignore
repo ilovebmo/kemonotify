@@ -23,3 +23,6 @@ node_modules
 
 ## Other
 kemono.rs
+sqlite.mjs
+storage.json
+old_main.rs
