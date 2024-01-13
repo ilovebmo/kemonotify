@@ -10,10 +10,14 @@ const { open } = window.__TAURI__.shell;
 const creatorDisplayTemplate = document.getElementById(
   "creator-display-template",
 );
-const selectedCreatorDisplayTemplate = document.getElementById("selected-creator-display-template");
+const selectedCreatorDisplayTemplate = document.getElementById(
+  "selected-creator-display-template",
+);
 
 // Other elements
-const selectedCreatorDisplay = document.getElementById("selected-creator-display");
+const selectedCreatorDisplay = document.getElementById(
+  "selected-creator-display",
+);
 const allCreatorDisplay = document.getElementById("all-creator-display");
 const forceSearchButton = document.getElementById("forced-search");
 const loadingSpinner = document.getElementById("loading-spinner");
@@ -56,7 +60,7 @@ listen("new-posts-event", (e) => {
   e.payload.forEach(postNotification);
 
   // Doesn't work yet...
-  e.payload.forEach(function(post) {
+  e.payload.forEach(function (post) {
     let empty_new_post = selectedCreatorDisplayTemplate.cloneNode(true);
     let new_post_template = empty_new_post.content.querySelector("li");
     new_post_template.id = `new post by ${post.user} (${post.service})`;
@@ -65,17 +69,17 @@ listen("new-posts-event", (e) => {
       new_post_template.remove();
     };
     new_post_template.appendChild(selected_button);
-  
+
     let new_post_image = new_post_template.querySelector("img");
     new_post_image.src = `https://img.kemono.su/icons/${post.service}/${post.user}`;
     new_post_button.appendChild(new_post_image);
-  
+
     let new_post_name = new_post_template.querySelector("p");
     new_post_name.textContent = `${post.user} (${post.service})`;
     new_post_button.appendChild(new_post_name);
-  
+
     newPosts.appendChild(new_post_template);
-  })
+  });
 });
 
 invoke("background_search", {
@@ -113,11 +117,15 @@ async function displayCreators(list = creatorsList.vector) {
     }
     input.onchange = function () {
       if (toCheckList.includes(input.id)) {
-        document.getElementById(`${creator.name} (${creator.service})`).remove();
+        document
+          .getElementById(`${creator.name} (${creator.service})`)
+          .remove();
         toCheckList.splice(toCheckList.indexOf(input.id, 0));
       } else {
-        let empty_selected_creator_template = selectedCreatorDisplayTemplate.cloneNode(true);
-        let selected_creator_template = empty_selected_creator_template.content.querySelector("li");
+        let empty_selected_creator_template =
+          selectedCreatorDisplayTemplate.cloneNode(true);
+        let selected_creator_template =
+          empty_selected_creator_template.content.querySelector("li");
         selected_creator_template.id = `${creator.name} (${creator.service})`;
         let selected_button = selected_creator_template.querySelector("button");
         selected_button.onclick = function () {
@@ -130,7 +138,6 @@ async function displayCreators(list = creatorsList.vector) {
         let selected_image = selected_creator_template.querySelector("img");
         selected_image.src = `https://img.kemono.su/icons/${creator.service}/${creator.id}`;
         selected_button.appendChild(selected_image);
-
 
         let selected_name = selected_creator_template.querySelector("p");
         selected_name.textContent = `${creator.name} (${creator.service})`;

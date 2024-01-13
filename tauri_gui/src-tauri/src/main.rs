@@ -291,19 +291,12 @@ fn main() {
             return Ok(());
         })
         .system_tray(
-            SystemTray::new()
-                .with_menu(
-                    SystemTrayMenu::new()
-                        .add_item(CustomMenuItem::new(
-                            "quit".to_string(),
-                            "Quit",
-                        ))
-                        .add_native_item(SystemTrayMenuItem::Separator)
-                        .add_item(CustomMenuItem::new(
-                            "hide".to_string(),
-                            "Hide",
-                        )),
-                )
+            SystemTray::new().with_menu(
+                SystemTrayMenu::new()
+                    .add_item(CustomMenuItem::new("quit".to_string(), "Quit"))
+                    .add_native_item(SystemTrayMenuItem::Separator)
+                    .add_item(CustomMenuItem::new("hide".to_string(), "Hide")),
+            ),
         )
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
