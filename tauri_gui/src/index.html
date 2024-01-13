@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+  <head class="rounded">
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./css/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,41 +8,124 @@
     <script type="module" src="/main.js" defer></script>
   </head>
 
-  <body class="bg-gray-900 p-1 overscroll-none">
-    <div class="grid grid-flow-col-dense auto-cols-max mb-2 h-[40px] ml-1 gap-x-[4px]">
-      <input type="text" id="creator-name" class="col-start-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Start searching...">
-      
-      <select id="time-select" class="col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-        <option value=5>5 Seconds</option> 
-        <option value=3600>1 Hour</option>
-        <option value=4320>12 Hours</option>  
-        <option value=86400>24 Hours</option> 
-      </select>
+  <body
+    class="bg-gray-900 p-1 overscroll-none auto-cols-auto grid grid-flow-col rounded"
+  >
+    <div class="flex flex-col">
+      <div
+        class="grid grid-flow-col-dense auto-cols-max mb-2 h-[40px] ml-1 gap-x-[4px]"
+      >
+        <input
+          type="text"
+          id="creator-name"
+          class="col-start-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Start searching..."
+        />
 
-      <button id="forced-search" class="col-start-3 sticky right-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"><img src="./assets/refresh.svg" /></button>
-    </div>
+        <select
+          id="time-select"
+          class="col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option value="5">5 Seconds</option>
+          <option value="3600">1 Hour</option>
+          <option value="4320">12 Hours</option>
+          <option value="86400">24 Hours</option>
+        </select>
 
-    <div class="pb-1 h-full">
-      <div id="loading-spinner" class="text-center h-full pt-[calc(50vh-60px)]">
-        <div role="status">
-          <svg aria-hidden="true" class="inline text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 w-16 h-16 items-center" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-          </svg>
-        </div>
+        <button
+          id="forced-search"
+          class="col-start-3 sticky right-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <img src="./assets/refresh.svg" />
+        </button>
       </div>
 
-      <ul class="overflow-y-scroll max-h-[calc(100vh-60px)]" id="all-creator-display">
-        <template id="creator-display-template" class="flex-row">
-          <li name="list" class="m-1 text-ellipsis text-slate-200 font-medium rounded grid grid-flow-col auto-cols-max items-center">
+      <div class="pb-1 h-full w-[75vh]">
+        <div
+          id="loading-spinner"
+          class="text-center h-full pt-[calc(50vh-60px)]"
+        >
+          <div role="status">
+            <svg
+              aria-hidden="true"
+              class="inline text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 w-16 h-16 items-center"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <ul
+          class="overflow-y-scroll max-h-[calc(100vh-60px)] w-[75vh]"
+          id="all-creator-display"
+        >
+          <template id="creator-display-template" class="flex-row">
+            <li
+              name="list"
+              class="m-1 text-ellipsis text-slate-200 font-medium rounded grid grid-flow-col auto-cols-max items-center"
+            >
+              <img name="image" class="w-20 h-20 rounded col-start-1" />
+              <p
+                name="link"
+                class="text-ellipsis justify-center text-center col-start-2"
+              ></p>
+              <input
+                type="checkbox"
+                class="col-start-12 resize-none w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <button name="button">
+                <img
+                  src="./assets/external-link.svg"
+                  class="col-start-13 h-5 w-5 hover:h-6 hover:w-6 transition-all"
+                />
+              </button>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col min-h-0 w-[25vh] gap-y-4">
+      <p class="row-start-1 font-medium text-slate-200 text-center text-2xl">
+        Selected
+      </p>
+      <ul
+        class="overflow-y-scroll h-[calc(30vh-60px)] w-[25vh]"
+        id="selected-creator-display"
+      >
+        <template id="selected-creator-display-template" class="flex-row">
+          <li
+            name="list"
+            class="m-1 text-ellipsis text-slate-200 font-medium rounded grid grid-flow-col auto-cols-max items-center min-w-full"
+          >
+            <button name="button" class="border border-slate-500 inline-block rounded bg-primary-100 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200">
+            </button>
             <img name="image" class="w-20 h-20 rounded col-start-1" />
-            <p name="link" class="text-ellipsis justify-center text-center col-start-2"></p>
-            <input type="checkbox" class="col-start-12 resize-none w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-            <button name="button"><img src="./assets/external-link.svg" class="col-start-13 h-5 w-5 hover:h-6 hover:w-6 transition-all"/></button>
+            <p
+              name="link"
+              class="text-ellipsis justify-center text-center col-start-2"
+            ></p>
           </li>
         </template>
       </ul>
+      <p class="row-start-1 font-medium text-slate-200 text-center text-2xl">
+        New Posts
+      </p>
+      <ul
+        class="overflow-y-scroll h-[calc(30vh-60px)] w-[25vh]"
+        id="new-posts"
+      >
+      </ul>
     </div>
-  
   </body>
 </html>

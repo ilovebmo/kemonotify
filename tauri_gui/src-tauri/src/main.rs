@@ -7,7 +7,10 @@ use std::collections::HashMap;
 use std::fs::{metadata, File};
 use std::io::{BufRead, BufReader, Write};
 use std::sync::{Arc, Mutex};
-use tauri::{SystemTray, Window};
+use tauri::{
+    CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+    SystemTrayMenuItem, Window,
+};
 
 // Kemono structs
 #[derive(Debug, Serialize, Deserialize, Eq, PartialEq, PartialOrd, Clone)]
@@ -158,6 +161,7 @@ async fn background_search(
 
 #[tauri::command]
 async fn forced_search(
+    window: Window,
     creator_hashmap: HashMap<String, Creator>,
     to_check: Vec<String>,
 ) -> HashMap<String, Post> {
@@ -197,6 +201,15 @@ async fn forced_search(
         serde_json::to_string(&current_storage).unwrap()
     )
     .expect("couldn't update storage");
+
+    let mut new_posts_emit = Vec::new();
+    for post in new_posts.values() {
+        new_posts_emit.push(post.to_owned());
+    }
+
+    window
+        .emit("new-posts-event", new_posts_emit)
+        .expect("couldn't emit new posts");
 
     return new_posts;
 }
@@ -277,7 +290,50 @@ fn main() {
 
             return Ok(());
         })
-        .system_tray(SystemTray::new())
+        .system_tray(
+            SystemTray::new()
+                .with_menu(
+                    SystemTrayMenu::new()
+                        .add_item(CustomMenuItem::new(
+                            "quit".to_string(),
+                            "Quit",
+                        ))
+                        .add_native_item(SystemTrayMenuItem::Separator)
+                        .add_item(CustomMenuItem::new(
+                            "hide".to_string(),
+                            "Hide",
+                        )),
+                )
+        )
+        .on_system_tray_event(|app, event| match event {
+            SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                "quit" => {
+                    std::process::exit(0);
+                }
+                "hide" => {
+                    let window = app.get_window("main").unwrap();
+                    window.hide().unwrap();
+                }
+                _ => {}
+            },
+            SystemTrayEvent::DoubleClick {
+                tray_id: _,
+                position: _,
+                size: _,
+                ..
+            } => {
+                let window = app.get_window("main").unwrap();
+                if !window.is_visible().unwrap() {
+                    window.show().unwrap();
+                } else {
+                    window.hide().unwrap();
+                }
+                if !window.is_focused().unwrap() {
+                    window.set_focus().unwrap();
+                }
+            }
+            _ => {}
+        })
         .invoke_handler(tauri::generate_handler![
             get_creators_list,
             background_search,
